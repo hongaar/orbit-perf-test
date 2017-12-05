@@ -98,6 +98,9 @@ const createGroup = (id) => {
     attributes: {
       name: faker.name.jobArea(),
     },
+    relationships: {
+      users: [],
+    },
   }
 }
 
@@ -108,7 +111,9 @@ const createUser = (id, relationships = {}) => {
     attributes: {
       name: faker.name.findName(),
     },
-    relationships,
+    relationships: Object.assign({}, {
+      children: [],
+    }, relationships),
   }
 }
 

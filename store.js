@@ -51,12 +51,13 @@ const schemaDefinitionWithoutInverse = {
 }
 
 const schema = new Schema(schemaDefinitionWithInverse)
+// const schema = new Schema(schemaDefinitionWithoutInverse)
 
 const store = new Store({
   schema,
   cacheSettings: {
-    // processors: [SCP, CIP],
-    processors: [],
+    processors: [SCP, CIP],
+    // processors: [],
   },
 })
 
