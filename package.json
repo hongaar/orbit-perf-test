@@ -7,6 +7,8 @@
     "@orbit/core": "^0.15.7",
     "@orbit/data": "^0.15.8",
     "@orbit/store": "^0.15.8",
-    "faker": "^4.1.0"
-  }
+    "faker": "^4.1.0",
+    "immutable": "^3.8.2"
+  },
+  "devDependencies": {}
 }
