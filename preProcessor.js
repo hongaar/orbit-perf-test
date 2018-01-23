@@ -1,3 +1,11 @@
+const addToRelatedModels = (relationships, name, identifier) => {
+  if (!relationships[name]) {
+    relationships[name] = {data: []}
+  }
+
+  relationships[name].data.push(identifier)
+}
+
 const preProcessor = (transform) => {
   // Create indexes
   const index = {
@@ -14,21 +22,17 @@ const preProcessor = (transform) => {
 
       // Add user to group
       if (operation.record.relationships.group) {
-        index["group"][operation.record.relationships.group.data.id].relationships.users.push({
-          data: {
-            type: "user",
-            id: operation.record.id,
-          },
+        addToRelatedModels(index["group"][operation.record.relationships.group.data.id].relationships, "users", {
+          type: "user",
+          id: operation.record.id,
         })
       }
 
       // Add child to parent
       if (operation.record.relationships.parent) {
-        index["user"][operation.record.relationships.parent.data.id].relationships.children.push({
-          data: {
-            type: "user",
-            id: operation.record.id,
-          },
+        addToRelatedModels(index["user"][operation.record.relationships.parent.data.id].relationships, "children", {
+          type: "user",
+          id: operation.record.id,
         })
       }
     }

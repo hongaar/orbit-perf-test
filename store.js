@@ -1,5 +1,6 @@
 const Schema = require("@orbit/data/dist/commonjs/es5/schema").default
 const Store = require("@orbit/store/dist/commonjs/es5/store").default
+// const Store = require("./lib/store").default
 
 const SCP = require("@orbit/store/dist/commonjs/es5/cache/operation-processors/schema-consistency-processor").default
 const CIP = require("@orbit/store/dist/commonjs/es5/cache/operation-processors/cache-integrity-processor").default
@@ -57,8 +58,8 @@ const storeCreator = () => {
   return new Store({
     schema,
     cacheSettings: {
-      processors: [SCP, CIP],
-      // processors: [],
+      // processors: [SCP, CIP],
+      processors: [],
     },
   })
 }

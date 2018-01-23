@@ -55,8 +55,16 @@ if (options.testImmutable) {
   console.log(`Immutable.js hydrate took ${duration}ms`)
 }
 
+const askForSync = () => {
+  // Get user input
+  console.log("Run now? Press enter.")
+  process.stdin.resume()
+}
+
 // Sync to store
 const doSync = () => {
+  // debugger
+  console.log("Hold tight!")
   start = process.hrtime()
   const store = storeCreator()
   store
@@ -67,24 +75,36 @@ const doSync = () => {
       console.log(`That is ${Math.round(options.n * 1000 / duration)} records/s`)
       console.log(`Or ${duration / options.n}s/1000 records`)
     })
+    .then(() => {
+      // Tests
+      const users1 = store.cache.query(q => q.findRelatedRecords({type: "group", id: 1}, "users"))
+      const users2 = store.cache.query(q => q.findRecord({type: "group", id: 1})).relationships.users.data
+      if (users1.length !== 6 || users2.length !== 6) {
+        console.error("Group should have 6 users, not " + users1.length + '/' + users2.length)
+      } else {
+        console.log("Group has 6 users")
+      }
+
+      const children1 = store.cache.query(q => q.findRelatedRecords({type: "user", id: 1}, "children"))
+      const children2 = store.cache.query(q => q.findRecord({type: "user", id: 1})).relationships.children.data
+      if (children1.length !== 2 || children2.length !== 2) {
+        console.error("User should have 2 children, not " + children1.length + '/' + children2.length)
+      } else {
+        console.log("User has 2 children")
+      }
+    })
     .catch((e) => {
       console.error(e)
     })
-    .then(() => {
-      // Get user input
-      console.log("Run again? Press enter.")
-      process.stdin.resume()
-    })
+    .then(askForSync)
 }
 
 // When we want to run again
-process.stdin.on('data', function(chunk) {
+process.stdin.on("data", function(chunk) {
   if (chunk !== null) {
     process.stdin.pause()
     doSync()
   }
 })
 
-doSync()
-
-// console.log(JSON.stringify(transform, null, 2))
+askForSync()

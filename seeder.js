@@ -1,7 +1,8 @@
 const faker = require("faker")
 const buildTransform = require("@orbit/data/dist/commonjs/es5/transform").buildTransform
+const clone = require("@orbit/utils/dist/commonjs/es5/objects").clone
 
-const usersPerGroup = 100
+const usersPerGroup = 4
 const childrenPerParent = 2
 
 const seeder = (options) => {
@@ -60,7 +61,7 @@ const seeder = (options) => {
 
       // When no parent exists, create a new one
       if (!currentParent) {
-        currentParent = createUser(userIdCounter++)
+        currentParent = createUser(userIdCounter++, {group: relationships.group})
         operations.push(createOperation(currentParent))
         recordsLeft--
       }
@@ -88,7 +89,7 @@ const createTransform = (operations) => buildTransform(operations)
 
 const createOperation = (record) => ({
   op: "addRecord",
-  record,
+  record: clone(record),
 })
 
 const createGroup = (id) => {
@@ -98,9 +99,7 @@ const createGroup = (id) => {
     attributes: {
       name: faker.name.jobArea(),
     },
-    relationships: {
-      users: [],
-    },
+    relationships: {},
   }
 }
 
@@ -111,9 +110,7 @@ const createUser = (id, relationships = {}) => {
     attributes: {
       name: faker.name.findName(),
     },
-    relationships: Object.assign({}, {
-      children: [],
-    }, relationships),
+    relationships,
   }
 }
 
