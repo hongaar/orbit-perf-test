@@ -2,6 +2,7 @@ const storeCreator = require("./store")
 const seeder = require("./seeder")
 const preProcessor = require("./preProcessor")
 const diffTimeInMs = require("./diffTimeInMs")
+const testRunner = require("./tests")
 const {Map} = require("immutable")
 
 const options = {
@@ -75,27 +76,8 @@ const doSync = () => {
       console.log(`That is ${Math.round(options.n * 1000 / duration)} records/s`)
       console.log(`Or ${duration / options.n}s/1000 records`)
     })
-    .then(() => {
-      // Tests
-      const users1 = store.cache.query(q => q.findRelatedRecords({type: "group", id: 1}, "users"))
-      const users2 = store.cache.query(q => q.findRecord({type: "group", id: 1})).relationships.users.data
-      if (users1.length !== 6 || users2.length !== 6) {
-        console.error("Group should have 6 users, not " + users1.length + '/' + users2.length)
-      } else {
-        console.log("Group has 6 users")
-      }
-
-      const children1 = store.cache.query(q => q.findRelatedRecords({type: "user", id: 1}, "children"))
-      const children2 = store.cache.query(q => q.findRecord({type: "user", id: 1})).relationships.children.data
-      if (children1.length !== 2 || children2.length !== 2) {
-        console.error("User should have 2 children, not " + children1.length + '/' + children2.length)
-      } else {
-        console.log("User has 2 children")
-      }
-    })
-    .catch((e) => {
-      console.error(e)
-    })
+    .then(() => testRunner(store))
+    .catch((e) => console.error(e))
     .then(askForSync)
 }
 
